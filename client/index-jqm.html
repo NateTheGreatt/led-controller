@@ -1,0 +1,92 @@
+<!DOCTYPE html> 
+<html>
+<head>
+	<title>Page Title</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="jscolor.min.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	<link rel='stylesheet' href='http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css' />
+
+	<script>
+		var socket = io('http://192.168.1.9:3000');
+
+		function powerToggle(el) {
+			if($(el).is(':checked')) on();
+			else off();
+		}
+
+		function on() {
+			if($('input[name=fade-toggle]').is(':checked')) socket.emit('led-event', {command: 'fade-in'});
+			else socket.emit('led-event', {command: 'on'});
+		}
+
+		function off() {
+			if($('input[name=fade-toggle]').is(':checked')) socket.emit('led-event', {command: 'fade-out'});
+			else socket.emit('led-event', {command: 'off'});
+		}
+
+		function brightness(el) {
+			socket.emit('led-event', { command: 'brightness', params: { brightness: $(el).val() } });
+		}
+
+		function setColor(rgb) {
+			socket.emit('led-event', { command: 'set-color', params: {rgb: '#'+rgb} });
+		}
+
+		function randomColorFader() {
+			socket.emit('led-event', {command: 'rnd-fader', params: { steps: $('#steps').val() } })
+		}
+
+		function seizureMode() {
+			socket.emit('led-event', {command: 'strobe', params: {rate:50}})
+		}
+	</script>
+
+
+</head>
+
+<body>
+
+<!-- Start of second page -->
+<div data-role="page" id="bar">
+
+	<div data-role="header">
+		<h1>LED Controller</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+	
+		<fieldset class='ui-grid-a'>
+			<div class='ui-block-a'>
+				<label for='power-toggle'>Power</label>
+				<input type='checkbox' data-role='flipswitch' name='power-toggle' onchange='powerToggle(this)' checked=''>
+			</div>
+			<div class='ui-block-b'>
+				<label for='fade-toggle'>Fade</label>
+				<input type='checkbox' data-role='flipswitch' name='fade-toggle' checked=''>
+			</div>
+		</fieldset>
+
+		<p>
+			<input class="jscolor {width:300, height:300, onFineChange:'setColor(this)'}" value="ab2567">
+			<button onclick='seizureMode()'>Seizure Mode</button>
+		</p>
+
+		<p>
+			<button onclick='randomColorFader()'>Random Color Fade</button>
+			<input type='range' id='steps' value='600' min='10' max='2000' />
+		</p>
+
+		<p>
+			<input type='range' id='brightness' onchange='brightness(this)' value='100' min='0' max='100' />
+		</p>
+
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+
+</html>

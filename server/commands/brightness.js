@@ -1,0 +1,1 @@
+module.exports = (led,params)=>led.intensity(params.brightness);

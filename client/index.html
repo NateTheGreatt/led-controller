@@ -1,0 +1,87 @@
+<script src="jscolor.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+<style>
+
+* {
+	transition: all 0.3s ease;
+}
+
+div {
+
+}
+
+button,input {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	margin:0;
+	padding:0;
+}
+
+#brightness, #steps {
+	width: 400px;
+}
+
+</style>
+
+<div>
+	<header>Strip 1:<header>
+	<div>
+		<input id='fade' type='checkbox' checked />
+		<button onclick='on()'>On</button>
+		<button onclick='off()'>Off</button>
+	</div>
+
+	<div>
+		<input class="jscolor {width:300, height:300, onFineChange:'setColor(this)'}" value="ab2567">
+		<button onclick='seizureMode()'>Seizure Mode</button>
+	</div>
+
+	<div>
+		<button onclick='randomColorFader()'>Random Color Fade</button>
+		<input type='range' id='steps' value='600' min='10' max='2000' />
+	</div>
+
+	<div>
+		<input type='range' id='brightness' oninput='brightness()' value='100' min='0' max='100' />
+	</div>
+
+</div>
+
+<p>
+Strip 2: Coming soon to a space burrito near you!
+</p>
+
+<script type="text/javascript">
+
+var socket = io('http://192.168.1.9:3000');
+
+function on() {
+	if($('#fade').is(':checked')) socket.emit('led-event', {command: 'fade-in'});
+	else socket.emit('led-event', {command: 'on'});
+}
+
+function off() {
+	if($('#fade').is(':checked')) socket.emit('led-event', {command: 'fade-out'});
+	else socket.emit('led-event', {command: 'off'});
+}
+
+function brightness() {
+	socket.emit('led-event', { command: 'brightness', params: { brightness: $('#brightness').val() } });
+}
+
+function setColor(rgb) {
+	socket.emit('led-event', { command: 'set-color', params: {rgb: '#'+rgb} });
+}
+
+function randomColorFader() {
+	socket.emit('led-event', {command: 'rnd-fader', params: { steps: $('#steps').val() } })
+}
+
+function seizureMode() {
+	socket.emit('led-event', {command: 'strobe', params: {rate:50}})
+}
+
+</script>
