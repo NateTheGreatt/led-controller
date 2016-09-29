@@ -1,6 +1,6 @@
-var strobing = false;
+var toggled = false;
 module.exports = (led,params)=>{
-	if(strobing) led.stop().on();
+	if(toggled) led.stop().on();
 	else led.strobe(params.rate);
-	strobing = !strobing;
+	toggled = !toggled;
 }

@@ -1,5 +1,5 @@
-var intervals = require('../intervals.js');
+var commander = require('../commander.js');
 module.exports = (led,params) => {
-	intervals.clearAll();
+	commander.clearAll();
 	led.color(params.rgb)
 }

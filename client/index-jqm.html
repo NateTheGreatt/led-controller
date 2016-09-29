@@ -36,11 +36,19 @@
 		}
 
 		function randomColorFader() {
-			socket.emit('led-event', {command: 'rnd-fader', params: { steps: $('#steps').val() } })
+			socket.emit('led-event', {command: 'wander', params: { steps: $('#steps').val() } })
 		}
 
 		function seizureMode() {
 			socket.emit('led-event', {command: 'strobe', params: {rate:50}})
+		}
+
+		function error() {
+			socket.emit('led-event', {command: 'error'});
+		}
+
+		function orbit() {
+			socket.emit('led-event', {command: 'orbit'});
 		}
 	</script>
 
@@ -70,13 +78,15 @@
 		</fieldset>
 
 		<p>
-			<input class="jscolor {width:300, height:300, onFineChange:'setColor(this)'}" value="ab2567">
+			<input class="jscolor {width:300, height:300, onFineChange:'setColor(this)'}" value="ffffff">
+			<button onclick='orbit()'>Orbit Mode</button>
 			<button onclick='seizureMode()'>Seizure Mode</button>
+			<button onclick='error()'>Error Mode</button>
 		</p>
 
 		<p>
 			<button onclick='randomColorFader()'>Random Color Fade</button>
-			<input type='range' id='steps' value='600' min='10' max='2000' />
+			<input type='range' id='steps' value='600' min='5' max='1200' />
 		</p>
 
 		<p>
